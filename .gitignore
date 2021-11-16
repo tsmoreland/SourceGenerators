@@ -341,3 +341,6 @@ healthchecksdb
 .dccache
 
 *.DotSettings
+
+# ignore generated folder
+/TSMoreland.ExceptionSourceGenerator.Consumer/Generated/TSMoreland.ExceptionSourceGenerator/TSMoreland.ExceptionSourceGenerator.ExceptionGenerator
