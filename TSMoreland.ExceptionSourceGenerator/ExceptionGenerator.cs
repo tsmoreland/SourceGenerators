@@ -152,7 +152,7 @@ namespace {item.Namespace}
 
             // Intent is to eventual handle others where each item defines a property 
             var attributes = testClass.GetAttributes()
-                .Where(a => $"{a.AttributeClass!.ContainingNamespace}.{a.AttributeClass!.Name}" == typeof(AddExceptionConstructorsAttribute).FullName);
+                .Where(a => $"{a.AttributeClass!.ContainingNamespace}.{a.AttributeClass!.Name}" == typeof(ExceptionGeneratorAttribute).FullName);
             if (attributes.Any())
             {
                 _items.Add(new SyntaxItem { Namespace = @namespace, ClassName = className });
