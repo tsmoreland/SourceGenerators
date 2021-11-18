@@ -33,7 +33,7 @@ public sealed class ExceptionGeneratorAttribute : Attribute
     public string? PropertyDefaultValue { get; set; }
 
     /// <value>
-    /// if <see langword="true"/> property be readonly
+    /// defaults to <see langword="true"/>,  property be readonly
     /// </value>
-    public bool IsReadOnly { get; set; }
+    public bool IsReadOnly { get; set; } = true;
 }
