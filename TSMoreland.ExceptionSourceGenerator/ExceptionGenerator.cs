@@ -32,10 +32,20 @@ public sealed class ExceptionGenerator : ISourceGenerator
     /// <inheritdoc/>
     public void Execute(GeneratorExecutionContext context)
     {
-        if (context.SyntaxContextReceiver is not SyntaxContextReceiver receiver)
+        /*
+        if (context.SyntaxReceiver is not SyntaxContextReceiver receiver)
         {
             return;
         }
+        */
+
+        if (context.SyntaxContextReceiver is not SyntaxContextReceiver receiver)
+        {
+            context.AddSource("GeneratorLogs", SourceText.From($@"/*{ context.SyntaxContextReceiver.GetType().FullName }*/", Encoding.UTF8));
+            return;
+        }
+
+        receiver.Log.Add($"Found {receiver.Items.Count()} items.");
 
         foreach (var item in receiver.Items)
         {
@@ -91,21 +101,13 @@ namespace {item.Namespace}
     }}
 }}
 ");
-            context.AddSource(item.ClassName, SourceText.From(builder.ToString(), Encoding.UTF8));
+            context.AddSource($"{item.Fullname}.g.cs", SourceText.From(builder.ToString(), Encoding.UTF8));
         }
 
         context.AddSource("GeneratorLogs", SourceText.From($@"/*{ Environment.NewLine + string.Join(Environment.NewLine, receiver.Log) + Environment.NewLine}*/", Encoding.UTF8));
 
     }
 
-    public sealed class SyntaxItem
-    {
-        public string FullClassName => $"{Namespace}.{FullClassName}";
-        public string Namespace { get; init; } = string.Empty;
-        public string ClassName { get; init; } = string.Empty;
-    }
-
-    /// <inheritdoc/>
     private sealed class SyntaxContextReceiver : ISyntaxContextReceiver
     {
         private readonly List<SyntaxItem> _items = new ();
@@ -113,12 +115,22 @@ namespace {item.Namespace}
 
         public IEnumerable<SyntaxItem> Items => _items.AsEnumerable();
 
-        /// <inheritdoc/>
         public void OnVisitSyntaxNode(GeneratorSyntaxContext context)
         {
             try
             {
                 SafeVisitSyntaxNode(context);
+            }
+            catch (Exception)
+            {
+                // ...
+            }
+        }
+        public void OnVisitSyntaxNode(SyntaxNode syntaxNode)
+        {
+            try
+            {
+                SafeVisitSyntaxNode(syntaxNode);
             }
             catch (Exception)
             {
@@ -138,25 +150,45 @@ namespace {item.Namespace}
 
             if (IsGlobalNamespace(@namespace))
             {
+                Log.Add($"Ignoring global namespace {@namespace}");
                 return;
             }
 
             var className = testClass.Name;
-            var fullClassName = $"{@namespace}.{className}";
 
             Log.Add("Namespace: " + @namespace);
             Log.Add("Class: " + className);
 
             // TODO: determine if class is sealed, if it is we should track that so anything that might be protcted uses private instaed
 
-
             // Intent is to eventual handle others where each item defines a property 
-            var attributes = testClass.GetAttributes()
-                .Where(a => $"{a.AttributeClass!.ContainingNamespace}.{a.AttributeClass!.Name}" == typeof(ExceptionGeneratorAttribute).FullName);
+            var allAttributes = testClass.GetAttributes();
+            foreach (var attribute in allAttributes)
+            {
+                Log.Add($"Found {attribute.AttributeClass!.ContainingNamespace}.{attribute.AttributeClass!.Name}, looking for {typeof(ExceptionGeneratorAttribute).FullName}");
+            }
+
+            var attributes = allAttributes.Where(a => $"{a.AttributeClass!.ContainingNamespace}.{a.AttributeClass!.Name}" == typeof(ExceptionGeneratorAttribute).FullName);
+
             if (attributes.Any())
             {
+                Log.Add($"Adding {@namespace}.{className}");
                 _items.Add(new SyntaxItem { Namespace = @namespace, ClassName = className });
             }
+            else
+            {
+                Log.Add($"Attribute not found");
+            }
+        }
+
+        private void SafeVisitSyntaxNode(SyntaxNode node)
+        {
+            if (node is not ClassDeclarationSyntax classSyntax)
+            {
+                return;
+            }
+
+
         }
 
         private static bool IsGlobalNamespace(string @namepsace)
@@ -164,5 +196,6 @@ namespace {item.Namespace}
             // bit of a simple check that could be improved
             return namepsace.Contains("<");
         }
+
     }
 }

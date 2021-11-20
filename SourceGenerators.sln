@@ -3,16 +3,18 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TSMoreland.ExceptionSourceGenerator", "TSMoreland.ExceptionSourceGenerator\TSMoreland.ExceptionSourceGenerator.csproj", "{511C6DC5-95C5-4FC7-976C-FDBC3664695B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TSMoreland.ExceptionSourceGenerator", "TSMoreland.ExceptionSourceGenerator\TSMoreland.ExceptionSourceGenerator.csproj", "{511C6DC5-95C5-4FC7-976C-FDBC3664695B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TSMoreland.ExceptionSourceGenerator.Consumer", "TSMoreland.ExceptionSourceGenerator.Consumer\TSMoreland.ExceptionSourceGenerator.Consumer.csproj", "{2B0914B0-F148-40D8-8064-1BBDC3C90E26}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TSMoreland.ExceptionSourceGenerator.Consumer", "TSMoreland.ExceptionSourceGenerator.Consumer\TSMoreland.ExceptionSourceGenerator.Consumer.csproj", "{2B0914B0-F148-40D8-8064-1BBDC3C90E26}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{B5942ADE-BE18-4811-942F-0FF526C046AA}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TSMoreland.ExceptionSourceGenerator.Shared", "TSMoreland.ExceptionSourceGenerator.Shared\TSMoreland.ExceptionSourceGenerator.Shared.csproj", "{BB93D2AF-115D-4A69-9EA8-73C3A3063C57}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TSMoreland.ExceptionSourceGenerator.Shared", "TSMoreland.ExceptionSourceGenerator.Shared\TSMoreland.ExceptionSourceGenerator.Shared.csproj", "{BB93D2AF-115D-4A69-9EA8-73C3A3063C57}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TSMoreland.ExceptionSourceGenerator.Test", "TSMoreland.ExceptionSourceGenerator.Test\TSMoreland.ExceptionSourceGenerator.Test.csproj", "{364CE85D-5034-499B-A7BA-320D9D1F992F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -32,6 +34,10 @@ Global
 		{BB93D2AF-115D-4A69-9EA8-73C3A3063C57}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BB93D2AF-115D-4A69-9EA8-73C3A3063C57}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BB93D2AF-115D-4A69-9EA8-73C3A3063C57}.Release|Any CPU.Build.0 = Release|Any CPU
+		{364CE85D-5034-499B-A7BA-320D9D1F992F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{364CE85D-5034-499B-A7BA-320D9D1F992F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{364CE85D-5034-499B-A7BA-320D9D1F992F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{364CE85D-5034-499B-A7BA-320D9D1F992F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
