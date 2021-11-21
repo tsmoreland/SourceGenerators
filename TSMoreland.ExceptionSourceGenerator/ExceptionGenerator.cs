@@ -16,13 +16,15 @@ using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
-using TSMoreland.ExceptionSourceGenerator.Shared;
 
 namespace TSMoreland.ExceptionSourceGenerator;
 
 [Generator]
 public sealed class ExceptionGenerator : ISourceGenerator
 {
+    private const string _generatorAttributeName = "TSMoreland.ExceptionSourceGenerator.Shared.ExceptionGeneratorAttribute";
+
+
     /// <inheritdoc/>
     public void Initialize(GeneratorInitializationContext context)
     {
@@ -32,16 +34,9 @@ public sealed class ExceptionGenerator : ISourceGenerator
     /// <inheritdoc/>
     public void Execute(GeneratorExecutionContext context)
     {
-        /*
-        if (context.SyntaxReceiver is not SyntaxContextReceiver receiver)
-        {
-            return;
-        }
-        */
-
         if (context.SyntaxContextReceiver is not SyntaxContextReceiver receiver)
         {
-            context.AddSource("GeneratorLogs", SourceText.From($@"/*{ context.SyntaxContextReceiver.GetType().FullName }*/", Encoding.UTF8));
+            context.AddSource("GeneratorLogs", SourceText.From($@"/*{ context.SyntaxContextReceiver?.GetType().FullName ?? "Unknown"}*/", Encoding.UTF8));
             return;
         }
 
@@ -126,17 +121,6 @@ namespace {item.Namespace}
                 // ...
             }
         }
-        public void OnVisitSyntaxNode(SyntaxNode syntaxNode)
-        {
-            try
-            {
-                SafeVisitSyntaxNode(syntaxNode);
-            }
-            catch (Exception)
-            {
-                // ...
-            }
-        }
 
         private void SafeVisitSyntaxNode(GeneratorSyntaxContext context)
         {
@@ -163,12 +147,8 @@ namespace {item.Namespace}
 
             // Intent is to eventual handle others where each item defines a property 
             var allAttributes = testClass.GetAttributes();
-            foreach (var attribute in allAttributes)
-            {
-                Log.Add($"Found {attribute.AttributeClass!.ContainingNamespace}.{attribute.AttributeClass!.Name}, looking for {typeof(ExceptionGeneratorAttribute).FullName}");
-            }
-
-            var attributes = allAttributes.Where(a => $"{a.AttributeClass!.ContainingNamespace}.{a.AttributeClass!.Name}" == typeof(ExceptionGeneratorAttribute).FullName);
+            Log.AddRange(allAttributes.Select(attribute => $"Found {attribute.AttributeClass!.ContainingNamespace}.{attribute.AttributeClass!.Name}, looking for {_generatorAttributeName}"));
+            var attributes = allAttributes.Where(a => $"{a.AttributeClass!.ContainingNamespace}.{a.AttributeClass!.Name}" == _generatorAttributeName);
 
             if (attributes.Any())
             {
@@ -181,15 +161,6 @@ namespace {item.Namespace}
             }
         }
 
-        private void SafeVisitSyntaxNode(SyntaxNode node)
-        {
-            if (node is not ClassDeclarationSyntax classSyntax)
-            {
-                return;
-            }
-
-
-        }
 
         private static bool IsGlobalNamespace(string @namepsace)
         {
