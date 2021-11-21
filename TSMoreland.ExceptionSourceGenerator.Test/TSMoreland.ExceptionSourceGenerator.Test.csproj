@@ -7,18 +7,6 @@
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 
-  <!-- useful for debugging purposes 
-	   but can cause problems when consuming the generator source
-  <PropertyGroup>
-    <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
-    <CompilerGeneratedFilesOutputPath>Generated</CompilerGeneratedFilesOutputPath>
-  </PropertyGroup>
-
-  <ItemGroup>
-    <Compile Remove="$(CompilerGeneratedFilesOutputPath)/*/**/*.cs" />
-  </ItemGroup>
-  -->
-
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.11.0" />
     <PackageReference Include="NUnit" Version="3.13.2" />
@@ -28,13 +16,8 @@
 
 
   <ItemGroup>
-    <ProjectReference Include="..\TSMoreland.ExceptionSourceGenerator.Consumer\TSMoreland.ExceptionSourceGenerator.Consumer.csproj" />
+    <ProjectReference Include="..\TSMoreland.ExceptionSourceGenerator.Consumer\TSMoreland.ExceptionSourceGenerator.Consumer.csproj"/>
     <ProjectReference Include="..\TSMoreland.ExceptionSourceGenerator.Shared\TSMoreland.ExceptionSourceGenerator.Shared.csproj" />
-  </ItemGroup>
-
-  <!-- must be in its own ItemGroup -->
-  <ItemGroup>
-    <ProjectReference Include="..\TSMoreland.ExceptionSourceGenerator\TSMoreland.ExceptionSourceGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
   </ItemGroup>
 
 </Project>
