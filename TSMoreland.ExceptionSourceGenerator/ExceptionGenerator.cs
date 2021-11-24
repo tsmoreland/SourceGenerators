@@ -148,12 +148,52 @@ namespace {item.Namespace}
             // Intent is to eventual handle others where each item defines a property 
             var allAttributes = testClass.GetAttributes();
             Log.AddRange(allAttributes.Select(attribute => $"Found {attribute.AttributeClass!.ContainingNamespace}.{attribute.AttributeClass!.Name}, looking for {_generatorAttributeName}"));
-            var attributes = allAttributes.Where(a => $"{a.AttributeClass!.ContainingNamespace}.{a.AttributeClass!.Name}" == _generatorAttributeName);
+            var attributes = allAttributes.Where(a => $"{a.AttributeClass!.ContainingNamespace}.{a.AttributeClass!.Name}" == _generatorAttributeName).ToArray();
 
             if (attributes.Any())
             {
-                Log.Add($"Adding {@namespace}.{className}");
-                _items.Add(new SyntaxItem { Namespace = @namespace, ClassName = className });
+                Log.Add($"Adding {@namespace}.{className} total: {attributes.Length}");
+                Dictionary<string, (string?, string?, bool)> propertiesByName = new();
+                for (int i = 0; i < attributes.Length; i++)
+                {
+                    var attribute = attributes[i];
+                    string? name = null;
+                    string? type = null;
+                    string? defaultValue = null;
+                    bool isReadonly = true;
+                    Log.Add($"{@namespace}.{className} position {i} of {attributes.Length}"); 
+                    Log.Add($"{@namespace}.{className} has {attribute.ConstructorArguments.Length} constructor arguments");
+                    Log.Add($"{@namespace}.{className} has {attribute.NamedArguments.Length} named arguments");
+
+                    Log.Add($"ctor args: {attribute.ConstructorArguments.Length}");
+                    foreach (var argument in attribute.ConstructorArguments)
+                    {
+                        Log.Add(argument.ToString());
+                        Log.Add(argument.Value?.ToString() ?? string.Empty);
+                        Log.Add(argument.Values.Select(o => o.ToString()).Aggregate((a,b) => $"{a}, {b}"));
+                    }
+
+                    Log.Add($"positional args: {attribute.NamedArguments.Length}");
+                    foreach (var argument in attribute.NamedArguments)
+                    {
+                        Log.Add($"position arg: {argument.Key}");
+                        Log.Add($"position arg value: {argument.Value.Value?.ToString() ?? "unknown"}");
+                        //Log.Add(argument.Value.Values.Select(o => o.ToString()).Aggregate((a,b) => $"{a}, {b}"));
+                    }
+
+                    Log.Add($"attribute complete");
+                }
+
+                /*
+                foreach (var attribute in attributes)
+                {
+                }
+                */
+                    Log.Add($"Adding {className}");
+
+                _items.Add(new SyntaxItem(@namespace, className) 
+                { 
+                });
             }
             else
             {
