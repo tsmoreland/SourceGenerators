@@ -54,15 +54,10 @@ namespace {item.Namespace}
 
     public partial class {item.ClassName} : System.Exception
     {{
-        /// <summary>
-        /// Initializes a new instance of the <see cref=""{item.ClassName}""/> class.
-        /// </summary>
-        public {item.ClassName}()
-            : this(null, null)
-        {{
-            
-        }}
+");
+            AddConstructor(builder, item);
 
+            builder.Append($@"
         /// <summary>
         /// Initializes a new instance of the <see cref=""{item.ClassName}""/> class with a specified error message.
         /// </summary>
@@ -103,12 +98,66 @@ namespace {item.Namespace}
 
     }
 
+    private static void AddConstructor(StringBuilder builder, ExceptionItem item)
+    {
+        if (item.Properties.Any())
+        {
+            builder.Append($@"
+        /// <summary>
+        /// Initializes a new instance of the <see cref=""{item.ClassName}""/> class.
+        /// </summary>
+        public {item.ClassName}(/*");
+            StringBuilder argumentBuilder = new();
+            foreach (var property in item.Properties.Select(p => p.ToString()))
+            {
+                argumentBuilder.Append(property + ",");
+            }
+            builder.Append(argumentBuilder.ToString().TrimEnd(','));
+            builder.Append(@"*/)
+{{");
+            builder.Append(@"
+}}");
+        }
+        else
+        {
+
+            builder.Append($@"
+        /// <summary>
+        /// Initializes a new instance of the <see cref=""{item.ClassName}""/> class.
+        /// </summary>
+        public {item.ClassName}()
+            : this(null, null)
+        {{
+            
+        }}
+");
+        }
+    }
+    private static void AddMessageConstructor(StringBuilder builder, ExceptionItem item)
+    {
+        if (item.Properties.Any())
+        {
+        }
+        else
+        {
+        }
+    }
+    private static void AddInnerExceptionConstructor(StringBuilder builder, ExceptionItem item)
+    {
+        if (item.Properties.Any())
+        {
+        }
+        else
+        {
+        }
+    }
+
     private sealed class SyntaxContextReceiver : ISyntaxContextReceiver
     {
-        private readonly List<SyntaxItem> _items = new ();
+        private readonly List<ExceptionItem> _items = new ();
         public List<string> Log { get; } = new();
 
-        public IEnumerable<SyntaxItem> Items => _items.AsEnumerable();
+        public IEnumerable<ExceptionItem> Items => _items.AsEnumerable();
 
         public void OnVisitSyntaxNode(GeneratorSyntaxContext context)
         {
@@ -152,6 +201,8 @@ namespace {item.Namespace}
 
             if (attributes.Any())
             {
+                var item = new ExceptionItem(@namespace, className);
+                Dictionary<string, PropertyItem> properties = new();
                 Log.Add($"Adding {@namespace}.{className} total: {attributes.Length}");
                 Dictionary<string, (string?, string?, bool)> propertiesByName = new();
                 for (int i = 0; i < attributes.Length; i++)
@@ -176,24 +227,34 @@ namespace {item.Namespace}
                     Log.Add($"positional args: {attribute.NamedArguments.Length}");
                     foreach (var argument in attribute.NamedArguments)
                     {
+                        switch (argument.Key)
+                        {
+                            case "IsReadOnly":
+                                isReadonly = argument.Value.Value is true;
+                                break;
+                            case "PropertyName":
+                                name = argument.Value.Value?.ToString() ?? string.Empty;
+                                break;
+                            case "PropertyType":
+                                type = argument.Value.Value?.ToString() ?? string.Empty;
+                                break;
+                            case "DefaultValue":
+                                defaultValue = argument.Value.Value?.ToString();
+                                break;
+                        }
+
                         Log.Add($"position arg: {argument.Key}");
                         Log.Add($"position arg value: {argument.Value.Value?.ToString() ?? "unknown"}");
-                        //Log.Add(argument.Value.Values.Select(o => o.ToString()).Aggregate((a,b) => $"{a}, {b}"));
+                    }
+
+                    if (name is { Length: > 0 } && type is { Length: > 0 })
+                    {
+                        properties[name] = new PropertyItem(name, type, isReadonly, defaultValue);
                     }
 
                     Log.Add($"attribute complete");
                 }
-
-                /*
-                foreach (var attribute in attributes)
-                {
-                }
-                */
-                    Log.Add($"Adding {className}");
-
-                _items.Add(new SyntaxItem(@namespace, className) 
-                { 
-                });
+                _items.Add(item with {Properties = properties.Values.ToList()});
             }
             else
             {
