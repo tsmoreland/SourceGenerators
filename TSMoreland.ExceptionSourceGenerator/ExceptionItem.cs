@@ -17,9 +17,10 @@ internal readonly record struct ExceptionItem(
 
     public string Fullname => $"{Namespace}.{ClassName}";
 
-
-    public void Initialize(StringBuilder builder)
+    public string Generate()
     {
+        StringBuilder builder = new();
+
         builder.Append($@"
 #nullable enable
 namespace {Namespace}
@@ -37,14 +38,13 @@ namespace {Namespace}
         AddProperties(builder);
             builder.Append($@"
 }}");
-    }
-    public void Finalize(StringBuilder builder)
-    {
             builder.Append($@"
         */
     }}
 }}
 ");
+        return builder.ToString();
+
     }
 
     private static void AddConstructor(StringBuilder builder, ExceptionItem item)
