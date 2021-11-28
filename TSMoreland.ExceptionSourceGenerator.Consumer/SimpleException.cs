@@ -5,4 +5,6 @@ namespace TSMoreland.ExceptionSourceGenerator.Consumer;
 [ExceptionGenerator]
 public partial class SimpleException
 {
+
+
 }
