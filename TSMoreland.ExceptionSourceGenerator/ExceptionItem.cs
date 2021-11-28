@@ -31,33 +31,38 @@ namespace {Namespace}
     public partial class {ClassName} : System.Exception
     {{
 ");
-        AddConstructor(builder, this);
+        AddConstructor(builder);
         AddMessageConstructor(builder, this);
         AddInnerExceptionConstructor(builder, this);
-
+        AddSerializationConstructor(builder);
         AddProperties(builder);
-            builder.Append($@"
-}}");
-            builder.Append($@"
-        */
+        builder.Append($@"
     }}
-}}
-");
+}}");
         return builder.ToString();
-
     }
 
-    private static void AddConstructor(StringBuilder builder, ExceptionItem item)
+    private void AddConstructor(StringBuilder builder)
     {
-        if (item.Properties.Any())
+        if (Properties.Any())
         {
-            builder.Append($@"
+            AddConstructorWithProperties(builder);
+        }
+        else
+        {
+            AddConstructorWithoutProperties(builder);
+        }
+    }
+
+    private void AddConstructorWithProperties(StringBuilder builder)
+    {
+        builder.Append($@"
         /// <summary>
-        /// Initializes a new instance of the <see cref=""{item.ClassName}""/> class.
+        /// Initializes a new instance of the <see cref=""{ClassName}""/> class.
         /// </summary>
-        public {item.ClassName}(/*");
+        public {ClassName}(/*");
             StringBuilder argumentBuilder = new();
-            foreach (var property in item.Properties.Select(p => p.CamelCaseTypeAndName))
+            foreach (var property in Properties.Select(p => p.CamelCaseTypeAndName))
             {
                 argumentBuilder.Append(property + ", ");
             }
@@ -68,31 +73,28 @@ namespace {Namespace}
             : this(/*");
 
             StringBuilder constructorArgs = new();
-            foreach (var property in item.Properties)
+            foreach (var property in Properties)
             {
                 constructorArgs.Append(property.CamelCaseName + ", ");
             }
             builder.Append(constructorArgs);
             builder.Append(@"*/ null, null)
         {
-        }
-");
-        }
-        else
-        {
-
-            builder.Append($@"
+        }");
+    }
+    private void AddConstructorWithoutProperties(StringBuilder builder)
+    {
+        builder.Append($@"
         /// <summary>
-        /// Initializes a new instance of the <see cref=""{item.ClassName}""/> class.
+        /// Initializes a new instance of the <see cref=""{ClassName}""/> class.
         /// </summary>
-        public {item.ClassName}()
+        public {ClassName}()
             : this(null, null)
         {{
             
-        }}
-");
-        }
+        }}");
     }
+
     private static void AddMessageConstructor(StringBuilder builder, ExceptionItem item)
     {
         if (item.Properties.Any())
@@ -213,9 +215,20 @@ namespace {Namespace}
 ");
         }
     }
+    private void AddSerializationConstructor(StringBuilder builder)
+    {
+        builder.Append($@"
+        protected {ClassName}(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context)
+            : base(info, context)
+        {{
+            
+        }}
+");
+    }
 
     private void AddProperties(StringBuilder builder)
     {
+        builder.AppendLine("/*");
         foreach (var property in Properties)
         {
             if (property.IsReadOnly)
@@ -227,10 +240,6 @@ namespace {Namespace}
                 builder.AppendLine($@"        public {property} {{ get; set; }}");
             }
         }
-
-        builder.Append(@"
-    */
-    }
-");
+        builder.AppendLine("*/");
     }
 }
