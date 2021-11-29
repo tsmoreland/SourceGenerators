@@ -109,8 +109,9 @@ public sealed class ExceptionGenerator : ISourceGenerator
                     var attribute = attributes[i];
                     string? name = null;
                     string? type = null;
+                    string? description = null;
                     string? defaultValue = null;
-                    bool isReadonly = true;
+                    var isReadonly = true;
                     Log.Add($"{@namespace}.{className} position {i} of {attributes.Length}"); 
                     Log.Add($"{@namespace}.{className} has {attribute.ConstructorArguments.Length} constructor arguments");
                     Log.Add($"{@namespace}.{className} has {attribute.NamedArguments.Length} named arguments");
@@ -137,6 +138,9 @@ public sealed class ExceptionGenerator : ISourceGenerator
                             case "PropertyType":
                                 type = argument.Value.Value?.ToString() ?? string.Empty;
                                 break;
+                            case "PropertyDescription":
+                                description = argument.Value.Value?.ToString() ?? string.Empty;
+                                break;
                             case "DefaultValue":
                                 defaultValue = argument.Value.Value?.ToString();
                                 break;
@@ -148,7 +152,7 @@ public sealed class ExceptionGenerator : ISourceGenerator
 
                     if (name is { Length: > 0 } && type is { Length: > 0 })
                     {
-                        properties[name] = new PropertyItem(name, type, isReadonly, defaultValue);
+                        properties[name] = new PropertyItem(name, type, isReadonly, description ?? string.Empty, defaultValue);
                     }
 
                     Log.Add($"attribute complete");
