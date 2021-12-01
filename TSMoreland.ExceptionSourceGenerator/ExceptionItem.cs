@@ -32,7 +32,7 @@ namespace {Namespace}
     {{
 ");
         AddConstructor(builder);
-        AddMessageConstructor(builder, this);
+        AddMessageConstructor(builder);
         AddInnerExceptionConstructor(builder, this);
         AddSerializationConstructor(builder);
         AddProperties(builder);
