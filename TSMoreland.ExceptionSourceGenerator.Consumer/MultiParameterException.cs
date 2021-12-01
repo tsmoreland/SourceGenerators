@@ -6,5 +6,4 @@ namespace TSMoreland.ExceptionSourceGenerator.Consumer;
 //[ExceptionGenerator(IsReadOnly = true, PropertyName = "Bravo", PropertyType = "System.Guid")]
 public partial class MultiParameterException
 {
-
 }
