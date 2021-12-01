@@ -6,7 +6,7 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
-  <!-- useful for debugging purposes
+  <!-- useful for debugging purposes 
   <PropertyGroup>
     <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
     <CompilerGeneratedFilesOutputPath>Generated</CompilerGeneratedFilesOutputPath>
@@ -15,7 +15,7 @@
   <ItemGroup>
     <Compile Remove="$(CompilerGeneratedFilesOutputPath)/*/**/*.cs" />
   </ItemGroup>
-  -->
+   -->
 
   <ItemGroup>
     <ProjectReference Include="..\TSMoreland.ExceptionSourceGenerator.Shared\TSMoreland.ExceptionSourceGenerator.Shared.csproj" />

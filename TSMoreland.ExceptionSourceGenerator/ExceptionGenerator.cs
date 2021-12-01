@@ -11,7 +11,6 @@
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // 
 
-using System.Reflection;
 using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -44,71 +43,20 @@ public sealed class ExceptionGenerator : ISourceGenerator
 
         foreach (var item in receiver.Items)
         {
-            var builder = new StringBuilder();
-            builder.Append($@"
-#nullable enable
-namespace {item.Namespace}
-{{
-    [System.SerializableAttribute]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute(""{nameof(ExceptionGenerator)}"", ""{Assembly.GetExecutingAssembly().GetName().Version}"")]
-
-    public partial class {item.ClassName} : System.Exception
-    {{
-        /// <summary>
-        /// Initializes a new instance of the <see cref=""{item.ClassName}""/> class.
-        /// </summary>
-        public {item.ClassName}()
-            : this(null, null)
-        {{
-            
-        }}
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref=""{item.ClassName}""/> class with a specified error message.
-        /// </summary>
-        /// <param name=""message"">The error message that explains the reason for the exception.</param>
-        public {item.ClassName}(string? message)
-            : this(message, null)
-        {{
-            
-        }}
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref=""{item.ClassName}""/> class with a specified error message and
-        /// a reference to the inner exception that is the cause of this exception.
-        /// </summary>
-        /// <param name=""message"">The error message that explains the reason for the exception.</param>
-        /// <param name=""innerException"">
-        /// The exception that is the cause of the current exception, or a <see langword=""null""/> reference
-        /// (Nothing in Visual Basic) if no inner exception is specified.
-        /// </param>
-        public {item.ClassName}(string? message, System.Exception? innerException)
-            : base(message, innerException)
-        {{
-            
-        }}
-
-        protected {item.ClassName}(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context)
-            : base(info, context)
-        {{
-            
-        }}
-    }}
-}}
-");
-            context.AddSource($"{item.Fullname}.g.cs", SourceText.From(builder.ToString(), Encoding.UTF8));
+            context.AddSource($"{item.Fullname}.g.cs", SourceText.From(item.Generate(), Encoding.UTF8));
         }
 
         context.AddSource("GeneratorLogs", SourceText.From($@"/*{ Environment.NewLine + string.Join(Environment.NewLine, receiver.Log) + Environment.NewLine}*/", Encoding.UTF8));
 
     }
 
+
     private sealed class SyntaxContextReceiver : ISyntaxContextReceiver
     {
-        private readonly List<SyntaxItem> _items = new ();
+        private readonly List<ExceptionItem> _items = new ();
         public List<string> Log { get; } = new();
 
-        public IEnumerable<SyntaxItem> Items => _items.AsEnumerable();
+        public IEnumerable<ExceptionItem> Items => _items.AsEnumerable();
 
         public void OnVisitSyntaxNode(GeneratorSyntaxContext context)
         {
@@ -148,12 +96,68 @@ namespace {item.Namespace}
             // Intent is to eventual handle others where each item defines a property 
             var allAttributes = testClass.GetAttributes();
             Log.AddRange(allAttributes.Select(attribute => $"Found {attribute.AttributeClass!.ContainingNamespace}.{attribute.AttributeClass!.Name}, looking for {_generatorAttributeName}"));
-            var attributes = allAttributes.Where(a => $"{a.AttributeClass!.ContainingNamespace}.{a.AttributeClass!.Name}" == _generatorAttributeName);
+            var attributes = allAttributes.Where(a => $"{a.AttributeClass!.ContainingNamespace}.{a.AttributeClass!.Name}" == _generatorAttributeName).ToArray();
 
             if (attributes.Any())
             {
-                Log.Add($"Adding {@namespace}.{className}");
-                _items.Add(new SyntaxItem { Namespace = @namespace, ClassName = className });
+                var item = new ExceptionItem(@namespace, className);
+                Dictionary<string, PropertyItem> properties = new();
+                Log.Add($"Adding {@namespace}.{className} total: {attributes.Length}");
+                Dictionary<string, (string?, string?, bool)> propertiesByName = new();
+                for (int i = 0; i < attributes.Length; i++)
+                {
+                    var attribute = attributes[i];
+                    string? name = null;
+                    string? type = null;
+                    string? description = null;
+                    string? defaultValue = null;
+                    var isReadonly = true;
+                    Log.Add($"{@namespace}.{className} position {i} of {attributes.Length}"); 
+                    Log.Add($"{@namespace}.{className} has {attribute.ConstructorArguments.Length} constructor arguments");
+                    Log.Add($"{@namespace}.{className} has {attribute.NamedArguments.Length} named arguments");
+
+                    Log.Add($"ctor args: {attribute.ConstructorArguments.Length}");
+                    foreach (var argument in attribute.ConstructorArguments)
+                    {
+                        Log.Add(argument.ToString());
+                        Log.Add(argument.Value?.ToString() ?? string.Empty);
+                        Log.Add(argument.Values.Select(o => o.ToString()).Aggregate((a,b) => $"{a}, {b}"));
+                    }
+
+                    Log.Add($"positional args: {attribute.NamedArguments.Length}");
+                    foreach (var argument in attribute.NamedArguments)
+                    {
+                        switch (argument.Key)
+                        {
+                            case "IsReadOnly":
+                                isReadonly = argument.Value.Value is true;
+                                break;
+                            case "PropertyName":
+                                name = argument.Value.Value?.ToString() ?? string.Empty;
+                                break;
+                            case "PropertyType":
+                                type = argument.Value.Value?.ToString() ?? string.Empty;
+                                break;
+                            case "PropertyDescription":
+                                description = argument.Value.Value?.ToString() ?? string.Empty;
+                                break;
+                            case "DefaultValue":
+                                defaultValue = argument.Value.Value?.ToString();
+                                break;
+                        }
+
+                        Log.Add($"position arg: {argument.Key}");
+                        Log.Add($"position arg value: {argument.Value.Value?.ToString() ?? "unknown"}");
+                    }
+
+                    if (name is { Length: > 0 } && type is { Length: > 0 })
+                    {
+                        properties[name] = new PropertyItem(name, type, isReadonly, description ?? string.Empty, defaultValue);
+                    }
+
+                    Log.Add($"attribute complete");
+                }
+                _items.Add(item with {Properties = properties.Values.ToList()});
             }
             else
             {
