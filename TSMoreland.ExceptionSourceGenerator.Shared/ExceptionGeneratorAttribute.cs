@@ -28,6 +28,11 @@ public sealed class ExceptionGeneratorAttribute : Attribute
     /// </value>
     public string? PropertyName { get; set; }
 
+    /// <summary>
+    /// description to be used in comments
+    /// </summary>
+    public string? PropertyDescription { get; set; }
+
     /// <value>
     /// </value>    
     public string? PropertyDefaultValue { get; set; }
