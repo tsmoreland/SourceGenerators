@@ -59,7 +59,15 @@ namespace {Namespace}
         builder.Append($@"
         /// <summary>
         /// Initializes a new instance of the <see cref=""{ClassName}""/> class.
-        /// </summary>
+        /// </summary>");
+
+        foreach (var property in Properties)
+        {
+            builder.Append($@"
+    /// <param name=""{property.Name}"">{property.Description}</param>");
+        }
+
+        builder.Append($@"
         public {ClassName}(/*");
             StringBuilder argumentBuilder = new();
             foreach (var property in Properties.Select(p => p.CamelCaseTypeAndName))
@@ -95,21 +103,37 @@ namespace {Namespace}
         }}");
     }
 
-    private static void AddMessageConstructor(StringBuilder builder, ExceptionItem item)
+    private void AddMessageConstructor(StringBuilder builder)
     {
-        if (item.Properties.Any())
+        if (Properties.Any())
         {
+            AddMessageConstructorWithProperties(builder);
+        }
+        else
+        {
+            AddMessageConstructorWithoutProperties(builder);
+        }
+    }
+
+    private void AddMessageConstructorWithProperties(StringBuilder builder)
+    {
             builder.Append($@"
         /// <summary>
-        /// Initializes a new instance of the <see cref=""{item.ClassName}""/> class with a specified error message.
-        /// </summary>
-");
+        /// Initializes a new instance of the <see cref=""{ClassName}""/> class with a specified error message.
+        /// </summary>");
+
+        foreach (var property in Properties)
+        {
+            builder.Append($@"
+    /// <param name=""{property.Name}"">{property.Description}</param>");
+        }
+
             builder.Append($@"
         /// <param name=""message"">The error message that explains the reason for the exception.</param>
-        public {item.ClassName}(/*");
+        public {ClassName}(/*");
 
             StringBuilder argumentBuilder = new();
-            foreach (var property in item.Properties.Select(p => p.CamelCaseTypeAndName))
+            foreach (var property in Properties.Select(p => p.CamelCaseTypeAndName))
             {
                 argumentBuilder.Append(property + ", ");
             }
@@ -119,7 +143,7 @@ namespace {Namespace}
             : this(/*");
 
             StringBuilder constructorArgs = new();
-            foreach (var property in item.Properties)
+            foreach (var property in Properties)
             {
                 constructorArgs.Append(property.CamelCaseName + ", ");
             }
@@ -127,26 +151,22 @@ namespace {Namespace}
             builder.Append(@"*/ message, null)
         {
 ");
-
-            builder.Append(@"
-        }
-");
-        }
-        else
-        {
+    }
+    private void AddMessageConstructorWithoutProperties(StringBuilder builder)
+    {
             builder.Append($@"
         /// <summary>
-        /// Initializes a new instance of the <see cref=""{item.ClassName}""/> class with a specified error message.
+        /// Initializes a new instance of the <see cref=""{ClassName}""/> class with a specified error message.
         /// </summary>
         /// <param name=""message"">The error message that explains the reason for the exception.</param>
-        public {item.ClassName}(string? message)
+        public {ClassName}(string? message)
             : this(message, null)
         {{
             
         }}
 ");
-        }
     }
+
     private static void AddInnerExceptionConstructor(StringBuilder builder, ExceptionItem item)
     {
         if (item.Properties.Any())

@@ -1,6 +1,6 @@
 ﻿namespace TSMoreland.ExceptionSourceGenerator;
 
-internal readonly record struct PropertyItem(string Name, string Type, bool IsReadOnly, string? DefaultValue = null)
+internal readonly record struct PropertyItem(string Name, string Type, bool IsReadOnly, string Description, string? DefaultValue = null)
 {
     public bool HasDefaultValue => DefaultValue is { Length: > 0 };
 
