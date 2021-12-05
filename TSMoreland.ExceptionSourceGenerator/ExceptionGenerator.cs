@@ -11,6 +11,7 @@
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // 
 
+using System.Collections.Immutable;
 using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -21,7 +22,7 @@ namespace TSMoreland.ExceptionSourceGenerator;
 [Generator]
 public sealed class ExceptionGenerator : ISourceGenerator
 {
-    private const string _generatorAttributeName = "TSMoreland.ExceptionSourceGenerator.Shared.ExceptionGeneratorAttribute";
+    private const string GeneratorAttributeName = "TSMoreland.ExceptionSourceGenerator.Shared.ExceptionGeneratorAttribute";
 
 
     /// <inheritdoc/>
@@ -78,7 +79,7 @@ public sealed class ExceptionGenerator : ISourceGenerator
             }
 
             var testClass = (INamedTypeSymbol)context.SemanticModel.GetDeclaredSymbol(context.Node)!;
-            var @namespace = testClass.ContainingNamespace.ToString();
+            string? @namespace = testClass.ContainingNamespace.ToString();
 
             if (IsGlobalNamespace(@namespace))
             {
@@ -86,7 +87,7 @@ public sealed class ExceptionGenerator : ISourceGenerator
                 return;
             }
 
-            var className = testClass.Name;
+            string className = testClass.Name;
 
             Log.Add("Namespace: " + @namespace);
             Log.Add("Class: " + className);
@@ -94,75 +95,82 @@ public sealed class ExceptionGenerator : ISourceGenerator
             // TODO: determine if class is sealed, if it is we should track that so anything that might be protcted uses private instaed
 
             // Intent is to eventual handle others where each item defines a property 
-            var allAttributes = testClass.GetAttributes();
-            Log.AddRange(allAttributes.Select(attribute => $"Found {attribute.AttributeClass!.ContainingNamespace}.{attribute.AttributeClass!.Name}, looking for {_generatorAttributeName}"));
-            var attributes = allAttributes.Where(a => $"{a.AttributeClass!.ContainingNamespace}.{a.AttributeClass!.Name}" == _generatorAttributeName).ToArray();
+            ImmutableArray<AttributeData> allAttributes = testClass.GetAttributes();
+            Log.AddRange(allAttributes.Select(attribute => $"Found {attribute.AttributeClass!.ContainingNamespace}.{attribute.AttributeClass!.Name}, looking for {GeneratorAttributeName}"));
+            AttributeData[] attributes = allAttributes.Where(a => $"{a.AttributeClass!.ContainingNamespace}.{a.AttributeClass!.Name}" == GeneratorAttributeName).ToArray();
 
-            if (attributes.Any())
-            {
-                var item = new ExceptionItem(@namespace, className);
-                Dictionary<string, PropertyItem> properties = new();
-                Log.Add($"Adding {@namespace}.{className} total: {attributes.Length}");
-                Dictionary<string, (string?, string?, bool)> propertiesByName = new();
-                for (int i = 0; i < attributes.Length; i++)
-                {
-                    var attribute = attributes[i];
-                    string? name = null;
-                    string? type = null;
-                    string? description = null;
-                    string? defaultValue = null;
-                    var isReadonly = true;
-                    Log.Add($"{@namespace}.{className} position {i} of {attributes.Length}"); 
-                    Log.Add($"{@namespace}.{className} has {attribute.ConstructorArguments.Length} constructor arguments");
-                    Log.Add($"{@namespace}.{className} has {attribute.NamedArguments.Length} named arguments");
-
-                    Log.Add($"ctor args: {attribute.ConstructorArguments.Length}");
-                    foreach (var argument in attribute.ConstructorArguments)
-                    {
-                        Log.Add(argument.ToString());
-                        Log.Add(argument.Value?.ToString() ?? string.Empty);
-                        Log.Add(argument.Values.Select(o => o.ToString()).Aggregate((a,b) => $"{a}, {b}"));
-                    }
-
-                    Log.Add($"positional args: {attribute.NamedArguments.Length}");
-                    foreach (var argument in attribute.NamedArguments)
-                    {
-                        switch (argument.Key)
-                        {
-                            case "IsReadOnly":
-                                isReadonly = argument.Value.Value is true;
-                                break;
-                            case "PropertyName":
-                                name = argument.Value.Value?.ToString() ?? string.Empty;
-                                break;
-                            case "PropertyType":
-                                type = argument.Value.Value?.ToString() ?? string.Empty;
-                                break;
-                            case "PropertyDescription":
-                                description = argument.Value.Value?.ToString() ?? string.Empty;
-                                break;
-                            case "DefaultValue":
-                                defaultValue = argument.Value.Value?.ToString();
-                                break;
-                        }
-
-                        Log.Add($"position arg: {argument.Key}");
-                        Log.Add($"position arg value: {argument.Value.Value?.ToString() ?? "unknown"}");
-                    }
-
-                    if (name is { Length: > 0 } && type is { Length: > 0 })
-                    {
-                        properties[name] = new PropertyItem(name, type, isReadonly, description ?? string.Empty, defaultValue);
-                    }
-
-                    Log.Add($"attribute complete");
-                }
-                _items.Add(item with {Properties = properties.Values.ToList()});
-            }
-            else
+            if (!attributes.Any())
             {
                 Log.Add($"Attribute not found");
+                return;
             }
+            var item = new ExceptionItem(@namespace, className);
+            Dictionary<string, PropertyItem> properties = new();
+            Log.Add($"Adding {@namespace}.{className} total: {attributes.Length}");
+
+            foreach (AttributeData attribute in attributes)
+            {
+                ProcessAttribute(attribute, @namespace, className, properties);
+            }
+
+            _items.Add(item with { Properties = properties.Values.ToList() });
+        }
+
+        private void LogConstructorArguments(AttributeData attribute)
+        {
+            Log.Add($"ctor args: {attribute.ConstructorArguments.Length}");
+            foreach (TypedConstant argument in attribute.ConstructorArguments)
+            {
+                Log.Add(argument.ToString());
+                Log.Add(argument.Value?.ToString() ?? string.Empty);
+                Log.Add(argument.Values.Select(o => o.ToString()).Aggregate((a, b) => $"{a}, {b}"));
+            }
+        }
+
+        private void ProcessAttribute(AttributeData attribute, string @namespace, string className, IDictionary<string, PropertyItem> properties)
+        {
+            string? name = null;
+            string? type = null;
+            string? description = null;
+            string? defaultValue = null;
+            bool isReadonly = true;
+            Log.Add($"{@namespace}.{className} has {attribute.NamedArguments.Length} named arguments");
+
+            LogConstructorArguments(attribute);
+
+            Log.Add($"positional args: {attribute.NamedArguments.Length}");
+            foreach (KeyValuePair<string, TypedConstant> argument in attribute.NamedArguments)
+            {
+                switch (argument.Key)
+                {
+                    case "IsReadOnly":
+                        isReadonly = argument.Value.Value is true;
+                        break;
+                    case "PropertyName":
+                        name = argument.Value.Value?.ToString() ?? string.Empty;
+                        break;
+                    case "PropertyType":
+                        type = argument.Value.Value?.ToString() ?? string.Empty;
+                        break;
+                    case "PropertyDescription":
+                        description = argument.Value.Value?.ToString() ?? string.Empty;
+                        break;
+                    case "DefaultValue":
+                        defaultValue = argument.Value.Value?.ToString();
+                        break;
+                }
+
+                Log.Add($"position arg: {argument.Key}");
+                Log.Add($"position arg value: {argument.Value.Value?.ToString() ?? "unknown"}");
+            }
+
+            if (name is { Length: > 0 } && type is { Length: > 0 })
+            {
+                properties[name] = new PropertyItem(name, type, isReadonly, description ?? string.Empty,
+                    defaultValue);
+            }
+
+            Log.Add("attribute complete");
         }
 
 
