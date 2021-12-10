@@ -33,7 +33,7 @@ namespace {Namespace}
 ");
         AddConstructor(builder);
         AddMessageConstructor(builder);
-        AddInnerExceptionConstructor(builder, this);
+        AddInnerExceptionConstructor(builder);
         AddSerializationConstructor(builder);
         AddProperties(builder);
         builder.Append($@"
@@ -61,32 +61,32 @@ namespace {Namespace}
         /// Initializes a new instance of the <see cref=""{ClassName}""/> class.
         /// </summary>");
 
-        foreach (var property in Properties)
+        foreach (PropertyItem property in Properties)
         {
             builder.Append($@"
-    /// <param name=""{property.Name}"">{property.Description}</param>");
+        /// <param name=""{property.CamelCaseName}"">{property.Description}</param>");
         }
 
         builder.Append($@"
-        public {ClassName}(/*");
+        public {ClassName}(");
             StringBuilder argumentBuilder = new();
-            foreach (var property in Properties.Select(p => p.CamelCaseTypeAndName))
+            foreach (string property in Properties.Select(p => p.CamelCaseTypeAndName))
             {
                 argumentBuilder.Append(property + ", ");
             }
 
-            var arguments = argumentBuilder.ToString();
+            string arguments = argumentBuilder.ToString();
             builder.Append(arguments.Substring(0, arguments.Length - 2));
-            builder.Append(@"*/)
-            : this(/*");
+            builder.Append(@")
+            : this(");
 
             StringBuilder constructorArgs = new();
-            foreach (var property in Properties)
+            foreach (PropertyItem property in Properties)
             {
                 constructorArgs.Append(property.CamelCaseName + ", ");
             }
             builder.Append(constructorArgs);
-            builder.Append(@"*/ null, null)
+            builder.Append(@" null, null)
         {
         }");
     }
@@ -117,39 +117,42 @@ namespace {Namespace}
 
     private void AddMessageConstructorWithProperties(StringBuilder builder)
     {
-            builder.Append($@"
+        builder.Append($@"
         /// <summary>
         /// Initializes a new instance of the <see cref=""{ClassName}""/> class with a specified error message.
-        /// </summary>");
+        /// </summary>
+");
 
-        foreach (var property in Properties)
+        foreach (PropertyItem property in Properties)
         {
-            builder.Append($@"
-    /// <param name=""{property.Name}"">{property.Description}</param>");
+            builder.Append($@"        /// <param name=""{property.CamelCaseName}"">{property.Description}</param>");
         }
 
-            builder.Append($@"
+        builder.Append($@"
         /// <param name=""message"">The error message that explains the reason for the exception.</param>
-        public {ClassName}(/*");
+        public {ClassName}(");
 
-            StringBuilder argumentBuilder = new();
-            foreach (var property in Properties.Select(p => p.CamelCaseTypeAndName))
-            {
-                argumentBuilder.Append(property + ", ");
-            }
-
-            builder.Append(argumentBuilder);
-            builder.Append(@"*/ string? message)
-            : this(/*");
-
-            StringBuilder constructorArgs = new();
-            foreach (var property in Properties)
-            {
-                constructorArgs.Append(property.CamelCaseName + ", ");
-            }
-            builder.Append(constructorArgs);
-            builder.Append(@"*/ message, null)
+        StringBuilder argumentBuilder = new();
+        foreach (string property in Properties.Select(p => p.CamelCaseTypeAndName))
         {
+            argumentBuilder.Append(property + ", ");
+        }
+        builder.Append(argumentBuilder);
+
+        builder.Append(@"string? message)
+            : this(");
+
+        StringBuilder constructorArgs = new();
+        foreach (var property in Properties)
+        {
+            constructorArgs.Append(property.CamelCaseName + ", ");
+        }
+        builder.Append(constructorArgs);
+
+        builder.Append(@"message, null)
+        {{
+            
+        }}
 ");
     }
     private void AddMessageConstructorWithoutProperties(StringBuilder builder)
@@ -167,59 +170,65 @@ namespace {Namespace}
 ");
     }
 
-    private static void AddInnerExceptionConstructor(StringBuilder builder, ExceptionItem item)
+    private void AddInnerExceptionConstructor(StringBuilder builder)
     {
-        if (item.Properties.Any())
+        if (Properties.Any())
         {
-            builder.Append($@"
-        /// <summary>
-        /// Initializes a new instance of the <see cref=""{item.ClassName}""/> class with a specified error message and
-        /// a reference to the inner exception that is the cause of this exception.
-        /// </summary>
-        /// <param name=""message"">The error message that explains the reason for the exception.</param>
-        /// <param name=""innerException"">
-        /// The exception that is the cause of the current exception, or a <see langword=""null""/> reference
-        /// (Nothing in Visual Basic) if no inner exception is specified.
-        /// </param>
-        public {item.ClassName}(/*");
-
-            StringBuilder argumentBuilder = new();
-            foreach (var property in item.Properties.Select(p => p.CamelCaseTypeAndName))
-            {
-                argumentBuilder.Append(property + ", ");
-            }
-
-            builder.Append(argumentBuilder);
-
-            builder.Append($@"*/ string? message, System.Exception? innerException)
-            : base(/* ");
-
-            StringBuilder constructorArgs = new();
-            foreach (var property in item.Properties)
-            {
-                constructorArgs.Append(property.CamelCaseName + ", ");
-            }
-            builder.Append(constructorArgs);
-
-            builder.Append($@"*/message, innerException)
-        {{
-        /*
-");
-            foreach (var property in item.Properties)
-            {
-                builder.AppendLine($@"            {property.Name} = {property.CamelCaseName};");
-            }
-
-            builder.Append(@"
-        */
-        }
-");
+            AddInnerExceptionConstructorWithProperties(builder);
         }
         else
         {
+            AddInnerExceptionConstructorWithPropertiesWithoutProperties(builder);
+        }
+    }
+    private void AddInnerExceptionConstructorWithProperties(StringBuilder builder)
+    {
+        builder.Append($@"
+        /// <summary>
+        /// Initializes a new instance of the <see cref=""{ClassName}""/> class with a specified error message and
+        /// a reference to the inner exception that is the cause of this exception.
+        /// </summary>
+");
+        foreach (PropertyItem property in Properties)
+        {
+            builder.Append($@"        /// <param name=""{property.CamelCaseName}"">{property.Description}</param>");
+        }
+
+        builder.Append($@"
+        /// <param name=""message"">The error message that explains the reason for the exception.</param>
+        /// <param name=""innerException"">
+        /// The exception that is the cause of the current exception, or a <see langword=""null""/> reference
+        /// (Nothing in Visual Basic) if no inner exception is specified.
+        /// </param>
+        public {ClassName}(");
+
+        StringBuilder argumentBuilder = new();
+        foreach (string property in Properties.Select(p => p.CamelCaseTypeAndName))
+        {
+            argumentBuilder.Append(property + ", ");
+        }
+
+        builder.Append(argumentBuilder);
+
+        builder.Append($@" string? message, System.Exception? innerException)
+            : base(message, innerException)
+        {{
+");
+
+        foreach (PropertyItem property in Properties)
+        {
+            builder.AppendLine($@"            {property.Name} = {property.CamelCaseName};");
+        }
+
+        builder.Append(@"
+        }
+");
+    }
+    private void AddInnerExceptionConstructorWithPropertiesWithoutProperties(StringBuilder builder)
+    {
             builder.Append($@"
         /// <summary>
-        /// Initializes a new instance of the <see cref=""{item.ClassName}""/> class with a specified error message and
+        /// Initializes a new instance of the <see cref=""{ClassName}""/> class with a specified error message and
         /// a reference to the inner exception that is the cause of this exception.
         /// </summary>
         /// <param name=""message"">The error message that explains the reason for the exception.</param>
@@ -227,39 +236,39 @@ namespace {Namespace}
         /// The exception that is the cause of the current exception, or a <see langword=""null""/> reference
         /// (Nothing in Visual Basic) if no inner exception is specified.
         /// </param>
-        public {item.ClassName}(string? message, System.Exception? innerException)
+        public {ClassName}(string? message, System.Exception? innerException)
             : base(message, innerException)
         {{
             
         }}
 ");
-        }
     }
+
     private void AddSerializationConstructor(StringBuilder builder)
     {
         builder.Append($@"
         protected {ClassName}(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context)
             : base(info, context)
         {{
-            
-        }}
+");
+        if (Properties.Any())
+        {
+            // ...
+        }
+
+        builder.Append(@"
+        }
+
 ");
     }
 
     private void AddProperties(StringBuilder builder)
     {
-        builder.AppendLine("/*");
-        foreach (var property in Properties)
+        foreach (PropertyItem property in Properties)
         {
-            if (property.IsReadOnly)
-            {
-                builder.AppendLine($@"        public {property} {{ get; init; }}");
-            }
-            else
-            {
-                builder.AppendLine($@"        public {property} {{ get; set; }}");
-            }
+            builder.AppendLine(property.IsReadOnly
+                ? $@"        public {property} {{ get; init; }}"
+                : $@"        public {property} {{ get; set; }}");
         }
-        builder.AppendLine("*/");
     }
 }
