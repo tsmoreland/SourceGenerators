@@ -1,4 +1,4 @@
-﻿namespace TSMoreland.ExceptionSourceGenerator.Shared;
+﻿namespace TSMoreland.SourceGenerators.Exceptions;
 
 /// <summary>
 /// Marks a class for application of source generator, if present the constructors
@@ -17,11 +17,11 @@ public sealed class ExceptionGeneratorAttribute : Attribute
     public ExceptionGeneratorAttribute()
     {
     }
+
     /// <value>
     /// Type for a property to be included in the exception
     /// </value>
     public string? PropertyType { get; set; }
-
 
     /// <value>
     /// Name for a property to be included in the exception

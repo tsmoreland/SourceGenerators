@@ -1,4 +1,4 @@
-﻿namespace TSMoreland.ExceptionSourceGenerator;
+﻿namespace TSMoreland.SourceGenerators.Exceptions.Generator;
 
 internal readonly record struct PropertyItem(string Name, string Type, bool IsReadOnly, string Description, string? DefaultValue = null)
 {

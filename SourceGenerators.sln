@@ -3,18 +3,20 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TSMoreland.ExceptionSourceGenerator", "TSMoreland.ExceptionSourceGenerator\TSMoreland.ExceptionSourceGenerator.csproj", "{511C6DC5-95C5-4FC7-976C-FDBC3664695B}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TSMoreland.ExceptionSourceGenerator.Consumer", "TSMoreland.ExceptionSourceGenerator.Consumer\TSMoreland.ExceptionSourceGenerator.Consumer.csproj", "{2B0914B0-F148-40D8-8064-1BBDC3C90E26}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{B5942ADE-BE18-4811-942F-0FF526C046AA}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TSMoreland.ExceptionSourceGenerator.Shared", "TSMoreland.ExceptionSourceGenerator.Shared\TSMoreland.ExceptionSourceGenerator.Shared.csproj", "{BB93D2AF-115D-4A69-9EA8-73C3A3063C57}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Exceptions", "Exceptions", "{886AD4D1-6D49-4F5F-A18C-5C367C0EE2D6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TSMoreland.ExceptionSourceGenerator.Test", "TSMoreland.ExceptionSourceGenerator.Test\TSMoreland.ExceptionSourceGenerator.Test.csproj", "{364CE85D-5034-499B-A7BA-320D9D1F992F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TSMoreland.SourceGenerators.Exceptions", "Exceptions\TSMoreland.SourceGenerators.Exceptions\TSMoreland.SourceGenerators.Exceptions.csproj", "{24D56A53-FE35-42A2-9EFB-B8C73F821075}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TSMoreland.SourceGenerators.Exceptions.Generator", "Exceptions\TSMoreland.SourceGenerators.Exceptions.Generator\TSMoreland.SourceGenerators.Exceptions.Generator.csproj", "{7DDB71A8-BF6D-47E0-AC5D-45EC4BA3B1FC}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TSMoreland.SourceGenerators.Consumers", "TSMoreland.SourceGenerators.Consumers\TSMoreland.SourceGenerators.Consumers.csproj", "{736C3FBE-EDE6-4AC1-A781-2848D58971B2}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TSMoreland.SourceGenerators.Test", "TSMoreland.SourceGenerators.Test\TSMoreland.SourceGenerators.Test.csproj", "{0E0422F2-5597-4B64-A885-60B691359F03}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -22,25 +24,29 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{511C6DC5-95C5-4FC7-976C-FDBC3664695B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{511C6DC5-95C5-4FC7-976C-FDBC3664695B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{511C6DC5-95C5-4FC7-976C-FDBC3664695B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{511C6DC5-95C5-4FC7-976C-FDBC3664695B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2B0914B0-F148-40D8-8064-1BBDC3C90E26}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2B0914B0-F148-40D8-8064-1BBDC3C90E26}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2B0914B0-F148-40D8-8064-1BBDC3C90E26}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2B0914B0-F148-40D8-8064-1BBDC3C90E26}.Release|Any CPU.Build.0 = Release|Any CPU
-		{BB93D2AF-115D-4A69-9EA8-73C3A3063C57}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BB93D2AF-115D-4A69-9EA8-73C3A3063C57}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BB93D2AF-115D-4A69-9EA8-73C3A3063C57}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BB93D2AF-115D-4A69-9EA8-73C3A3063C57}.Release|Any CPU.Build.0 = Release|Any CPU
-		{364CE85D-5034-499B-A7BA-320D9D1F992F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{364CE85D-5034-499B-A7BA-320D9D1F992F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{364CE85D-5034-499B-A7BA-320D9D1F992F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{364CE85D-5034-499B-A7BA-320D9D1F992F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{24D56A53-FE35-42A2-9EFB-B8C73F821075}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{24D56A53-FE35-42A2-9EFB-B8C73F821075}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{24D56A53-FE35-42A2-9EFB-B8C73F821075}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{24D56A53-FE35-42A2-9EFB-B8C73F821075}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7DDB71A8-BF6D-47E0-AC5D-45EC4BA3B1FC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7DDB71A8-BF6D-47E0-AC5D-45EC4BA3B1FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7DDB71A8-BF6D-47E0-AC5D-45EC4BA3B1FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7DDB71A8-BF6D-47E0-AC5D-45EC4BA3B1FC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{736C3FBE-EDE6-4AC1-A781-2848D58971B2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{736C3FBE-EDE6-4AC1-A781-2848D58971B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{736C3FBE-EDE6-4AC1-A781-2848D58971B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{736C3FBE-EDE6-4AC1-A781-2848D58971B2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0E0422F2-5597-4B64-A885-60B691359F03}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0E0422F2-5597-4B64-A885-60B691359F03}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0E0422F2-5597-4B64-A885-60B691359F03}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0E0422F2-5597-4B64-A885-60B691359F03}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{24D56A53-FE35-42A2-9EFB-B8C73F821075} = {886AD4D1-6D49-4F5F-A18C-5C367C0EE2D6}
+		{7DDB71A8-BF6D-47E0-AC5D-45EC4BA3B1FC} = {886AD4D1-6D49-4F5F-A18C-5C367C0EE2D6}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A13201A1-8DE2-4ED4-A273-11ECFC5A2EB3}

@@ -6,7 +6,7 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
-  <!-- useful for debugging purposes 
+  <!-- useful for debugging purposes
   <PropertyGroup>
     <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
     <CompilerGeneratedFilesOutputPath>Generated</CompilerGeneratedFilesOutputPath>
@@ -18,12 +18,14 @@
    -->
 
   <ItemGroup>
-    <ProjectReference Include="..\TSMoreland.ExceptionSourceGenerator.Shared\TSMoreland.ExceptionSourceGenerator.Shared.csproj" />
+    <ProjectReference Include="..\Exceptions\TSMoreland.SourceGenerators.Exceptions\TSMoreland.SourceGenerators.Exceptions.csproj" />
   </ItemGroup>
 
   <!-- must be in its own ItemGroup -->
   <ItemGroup>
-    <ProjectReference Include="..\TSMoreland.ExceptionSourceGenerator\TSMoreland.ExceptionSourceGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+    <ProjectReference Include="..\Exceptions\TSMoreland.SourceGenerators.Exceptions.Generator\TSMoreland.SourceGenerators.Exceptions.Generator.csproj"
+                      OutputItemType="Analyzer"
+                      ReferenceOutputAssembly="false"/>
   </ItemGroup>
 
 </Project>

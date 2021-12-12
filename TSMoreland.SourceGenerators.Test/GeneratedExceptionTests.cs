@@ -1,8 +1,7 @@
-using System;
 using NUnit.Framework;
-using TSMoreland.ExceptionSourceGenerator.Consumer;
+using TSMoreland.SourceGenerators.Consumers;
 
-namespace TSMoreland.ExceptionSourceGenerator.Test;
+namespace TSMoreland.SourceGenerators.Test;
 
 /// <summary>
 /// mostly verifying what is fairly obvious, the real test is whether this compiles

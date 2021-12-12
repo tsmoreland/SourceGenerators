@@ -1,7 +1,7 @@
 ﻿using System.Reflection;
 using System.Text;
 
-namespace TSMoreland.ExceptionSourceGenerator;
+namespace TSMoreland.SourceGenerators.Exceptions.Generator;
 
 internal readonly record struct ExceptionItem(
     string Namespace, 
