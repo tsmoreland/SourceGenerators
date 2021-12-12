@@ -8,7 +8,6 @@ namespace TSMoreland.SourceGenerators.Test;
 /// </summary>
 public class GeneratedExceptionTests
 {
-    /*
     [Test]
     public void SimpleException_ReturnsMessage_WhenGeneratedAndGivenMessage()
     {
@@ -36,6 +35,5 @@ public class GeneratedExceptionTests
         var actual = exception.InnerException;
         Assert.That(actual, Is.EqualTo(expected));
     }
-    */
 
 }

@@ -22,7 +22,7 @@ namespace TSMoreland.SourceGenerators.Exceptions.Generator;
 [Generator]
 public sealed class ExceptionGenerator : ISourceGenerator
 {
-    private const string GeneratorAttributeName = "TSMoreland.ExceptionSourceGenerator.Shared.ExceptionGeneratorAttribute";
+    private const string GeneratorAttributeName = "TSMoreland.SourceGenerators.Exceptions.ExceptionGeneratorAttribute";
 
 
     /// <inheritdoc/>
