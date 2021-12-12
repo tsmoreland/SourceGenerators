@@ -1,6 +1,6 @@
-﻿using TSMoreland.ExceptionSourceGenerator.Shared;
+﻿using TSMoreland.SourceGenerators.Exceptions;
 
-namespace TSMoreland.ExceptionSourceGenerator.Consumer;
+namespace TSMoreland.SourceGenerators.Consumers;
 
 [ExceptionGenerator(IsReadOnly = true, PropertyName = "Alpha", PropertyType = "int")]
 [ExceptionGenerator(IsReadOnly = true, PropertyName = "Bravo", PropertyType = "System.Guid")]

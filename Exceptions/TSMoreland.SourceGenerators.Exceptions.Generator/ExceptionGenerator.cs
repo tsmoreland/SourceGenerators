@@ -17,7 +17,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 
-namespace TSMoreland.ExceptionSourceGenerator;
+namespace TSMoreland.SourceGenerators.Exceptions.Generator;
 
 [Generator]
 public sealed class ExceptionGenerator : ISourceGenerator

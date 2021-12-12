@@ -1,6 +1,6 @@
-﻿using TSMoreland.ExceptionSourceGenerator.Shared;
+﻿using TSMoreland.SourceGenerators.Exceptions;
 
-namespace TSMoreland.ExceptionSourceGenerator.Consumer;
+namespace TSMoreland.SourceGenerators.Consumers;
 
 [ExceptionGenerator]
 public partial class SimpleException
