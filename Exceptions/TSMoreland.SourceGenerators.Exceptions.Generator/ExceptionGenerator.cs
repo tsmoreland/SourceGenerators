@@ -65,9 +65,9 @@ public sealed class ExceptionGenerator : ISourceGenerator
             {
                 SafeVisitSyntaxNode(context);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // ...
+                Log.Add(ex.ToString());
             }
         }
 
