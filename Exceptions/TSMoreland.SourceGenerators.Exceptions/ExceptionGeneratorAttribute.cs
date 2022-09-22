@@ -34,10 +34,6 @@ public sealed class ExceptionGeneratorAttribute : Attribute
     public string? PropertyDescription { get; set; }
 
     /// <value>
-    /// </value>    
-    public string? PropertyDefaultValue { get; set; }
-
-    /// <value>
     /// defaults to <see langword="true"/>,  property be readonly
     /// </value>
     public bool IsReadOnly { get; set; } = true;

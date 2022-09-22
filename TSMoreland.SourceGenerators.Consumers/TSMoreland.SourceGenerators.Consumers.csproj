@@ -11,11 +11,11 @@
     <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
     <CompilerGeneratedFilesOutputPath>Generated</CompilerGeneratedFilesOutputPath>
   </PropertyGroup>
-
   <ItemGroup>
-    <Compile Remove="$(CompilerGeneratedFilesOutputPath)/*/**/*.cs" />
+    <Compile Remove="$(CompilerGeneratedFilesOutputPath)/**/*.cs" />
   </ItemGroup>
    -->
+
 
   <ItemGroup>
     <ProjectReference Include="..\Exceptions\TSMoreland.SourceGenerators.Exceptions\TSMoreland.SourceGenerators.Exceptions.csproj" />
@@ -23,9 +23,7 @@
 
   <!-- must be in its own ItemGroup -->
   <ItemGroup>
-    <ProjectReference Include="..\Exceptions\TSMoreland.SourceGenerators.Exceptions.Generator\TSMoreland.SourceGenerators.Exceptions.Generator.csproj"
-                      OutputItemType="Analyzer"
-                      ReferenceOutputAssembly="false"/>
+    <ProjectReference Include="..\Exceptions\TSMoreland.SourceGenerators.Exceptions.Generator\TSMoreland.SourceGenerators.Exceptions.Generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
   </ItemGroup>
 
 </Project>
