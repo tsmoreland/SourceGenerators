@@ -10,15 +10,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Exceptions", "Exceptions", "{886AD4D1-6D49-4F5F-A18C-5C367C0EE2D6}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TSMoreland.SourceGenerators.Exceptions", "Exceptions\TSMoreland.SourceGenerators.Exceptions\TSMoreland.SourceGenerators.Exceptions.csproj", "{24D56A53-FE35-42A2-9EFB-B8C73F821075}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TSMoreland.SourceGenerators.Exceptions.Generator.Test", "test\TSMoreland.SourceGenerators.Exceptions.Generator.Test\TSMoreland.SourceGenerators.Exceptions.Generator.Test.csproj", "{DFC7D05C-6243-4B21-979B-28EEE9DD4C8D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TSMoreland.SourceGenerators.Exceptions.Generator", "Exceptions\TSMoreland.SourceGenerators.Exceptions.Generator\TSMoreland.SourceGenerators.Exceptions.Generator.csproj", "{7DDB71A8-BF6D-47E0-AC5D-45EC4BA3B1FC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TSMoreland.SourceGenerators.Exceptions", "src\Exceptions\TSMoreland.SourceGenerators.Exceptions\TSMoreland.SourceGenerators.Exceptions.csproj", "{0813041C-6880-4F96-84F5-003E08D3F130}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TSMoreland.SourceGenerators.Consumers", "TSMoreland.SourceGenerators.Consumers\TSMoreland.SourceGenerators.Consumers.csproj", "{736C3FBE-EDE6-4AC1-A781-2848D58971B2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TSMoreland.SourceGenerators.Exceptions.Generator", "src\Exceptions\TSMoreland.SourceGenerators.Exceptions.Generator\TSMoreland.SourceGenerators.Exceptions.Generator.csproj", "{BB46376B-E704-4E5E-B848-A77F08588B85}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TSMoreland.SourceGenerators.Test", "TSMoreland.SourceGenerators.Test\TSMoreland.SourceGenerators.Test.csproj", "{0E0422F2-5597-4B64-A885-60B691359F03}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TSMoreland.SourceGenerators.Consumers", "src\TSMoreland.SourceGenerators.Consumers\TSMoreland.SourceGenerators.Consumers.csproj", "{FAADE8E4-D878-4ED3-8BDA-162D569E0A43}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TSMoreland.SourceGenerators.Exceptions.Generator.Test", "test\TSMoreland.SourceGenerators.Exceptions.Generator.Test\TSMoreland.SourceGenerators.Exceptions.Generator.Test.csproj", "{DFC7D05C-6243-4B21-979B-28EEE9DD4C8D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TSMoreland.SourceGenerators.Test", "test\TSMoreland.SourceGenerators.Test\TSMoreland.SourceGenerators.Test.csproj", "{14BB1136-1967-43AF-84E9-92F14886C987}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -26,34 +26,34 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{24D56A53-FE35-42A2-9EFB-B8C73F821075}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{24D56A53-FE35-42A2-9EFB-B8C73F821075}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{24D56A53-FE35-42A2-9EFB-B8C73F821075}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{24D56A53-FE35-42A2-9EFB-B8C73F821075}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7DDB71A8-BF6D-47E0-AC5D-45EC4BA3B1FC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7DDB71A8-BF6D-47E0-AC5D-45EC4BA3B1FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7DDB71A8-BF6D-47E0-AC5D-45EC4BA3B1FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7DDB71A8-BF6D-47E0-AC5D-45EC4BA3B1FC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{736C3FBE-EDE6-4AC1-A781-2848D58971B2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{736C3FBE-EDE6-4AC1-A781-2848D58971B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{736C3FBE-EDE6-4AC1-A781-2848D58971B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{736C3FBE-EDE6-4AC1-A781-2848D58971B2}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0E0422F2-5597-4B64-A885-60B691359F03}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0E0422F2-5597-4B64-A885-60B691359F03}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0E0422F2-5597-4B64-A885-60B691359F03}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0E0422F2-5597-4B64-A885-60B691359F03}.Release|Any CPU.Build.0 = Release|Any CPU
 		{DFC7D05C-6243-4B21-979B-28EEE9DD4C8D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{DFC7D05C-6243-4B21-979B-28EEE9DD4C8D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DFC7D05C-6243-4B21-979B-28EEE9DD4C8D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DFC7D05C-6243-4B21-979B-28EEE9DD4C8D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0813041C-6880-4F96-84F5-003E08D3F130}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0813041C-6880-4F96-84F5-003E08D3F130}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0813041C-6880-4F96-84F5-003E08D3F130}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0813041C-6880-4F96-84F5-003E08D3F130}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BB46376B-E704-4E5E-B848-A77F08588B85}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BB46376B-E704-4E5E-B848-A77F08588B85}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BB46376B-E704-4E5E-B848-A77F08588B85}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BB46376B-E704-4E5E-B848-A77F08588B85}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FAADE8E4-D878-4ED3-8BDA-162D569E0A43}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FAADE8E4-D878-4ED3-8BDA-162D569E0A43}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FAADE8E4-D878-4ED3-8BDA-162D569E0A43}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FAADE8E4-D878-4ED3-8BDA-162D569E0A43}.Release|Any CPU.Build.0 = Release|Any CPU
+		{14BB1136-1967-43AF-84E9-92F14886C987}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{14BB1136-1967-43AF-84E9-92F14886C987}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{14BB1136-1967-43AF-84E9-92F14886C987}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{14BB1136-1967-43AF-84E9-92F14886C987}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{24D56A53-FE35-42A2-9EFB-B8C73F821075} = {886AD4D1-6D49-4F5F-A18C-5C367C0EE2D6}
-		{7DDB71A8-BF6D-47E0-AC5D-45EC4BA3B1FC} = {886AD4D1-6D49-4F5F-A18C-5C367C0EE2D6}
 		{DFC7D05C-6243-4B21-979B-28EEE9DD4C8D} = {886AD4D1-6D49-4F5F-A18C-5C367C0EE2D6}
+		{0813041C-6880-4F96-84F5-003E08D3F130} = {886AD4D1-6D49-4F5F-A18C-5C367C0EE2D6}
+		{BB46376B-E704-4E5E-B848-A77F08588B85} = {886AD4D1-6D49-4F5F-A18C-5C367C0EE2D6}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A13201A1-8DE2-4ED4-A273-11ECFC5A2EB3}

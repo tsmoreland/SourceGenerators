@@ -18,8 +18,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Exceptions\TSMoreland.SourceGenerators.Exceptions\TSMoreland.SourceGenerators.Exceptions.csproj" />
-    <ProjectReference Include="..\TSMoreland.SourceGenerators.Consumers\TSMoreland.SourceGenerators.Consumers.csproj" />
+    <ProjectReference Include="..\..\src\Exceptions\TSMoreland.SourceGenerators.Exceptions\TSMoreland.SourceGenerators.Exceptions.csproj" />
+    <ProjectReference Include="..\..\src\TSMoreland.SourceGenerators.Consumers\TSMoreland.SourceGenerators.Consumers.csproj" />
   </ItemGroup>
 
 </Project>
