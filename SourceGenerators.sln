@@ -18,6 +18,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TSMoreland.SourceGenerators
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TSMoreland.SourceGenerators.Test", "TSMoreland.SourceGenerators.Test\TSMoreland.SourceGenerators.Test.csproj", "{0E0422F2-5597-4B64-A885-60B691359F03}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TSMoreland.SourceGenerators.Exceptions.Generator.Test", "test\TSMoreland.SourceGenerators.Exceptions.Generator.Test\TSMoreland.SourceGenerators.Exceptions.Generator.Test.csproj", "{DFC7D05C-6243-4B21-979B-28EEE9DD4C8D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -40,6 +42,10 @@ Global
 		{0E0422F2-5597-4B64-A885-60B691359F03}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0E0422F2-5597-4B64-A885-60B691359F03}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0E0422F2-5597-4B64-A885-60B691359F03}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DFC7D05C-6243-4B21-979B-28EEE9DD4C8D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DFC7D05C-6243-4B21-979B-28EEE9DD4C8D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DFC7D05C-6243-4B21-979B-28EEE9DD4C8D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DFC7D05C-6243-4B21-979B-28EEE9DD4C8D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -47,6 +53,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{24D56A53-FE35-42A2-9EFB-B8C73F821075} = {886AD4D1-6D49-4F5F-A18C-5C367C0EE2D6}
 		{7DDB71A8-BF6D-47E0-AC5D-45EC4BA3B1FC} = {886AD4D1-6D49-4F5F-A18C-5C367C0EE2D6}
+		{DFC7D05C-6243-4B21-979B-28EEE9DD4C8D} = {886AD4D1-6D49-4F5F-A18C-5C367C0EE2D6}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A13201A1-8DE2-4ED4-A273-11ECFC5A2EB3}
