@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
@@ -23,9 +23,8 @@
 
   <!-- must be in its own ItemGroup -->
   <ItemGroup>
-    <ProjectReference Include="..\Exceptions\TSMoreland.SourceGenerators.Exceptions.Generator\TSMoreland.SourceGenerators.Exceptions.Generator.csproj"
-                      OutputItemType="Analyzer"
-                      ReferenceOutputAssembly="false" />
+    <ProjectReference Include="..\DebugDisplay.Generator\TSMoreland.SourceGenerators.DebugDisplay.Generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false"/>
+    <ProjectReference Include="..\Exceptions\TSMoreland.SourceGenerators.Exceptions.Generator\TSMoreland.SourceGenerators.Exceptions.Generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
   </ItemGroup>
 
 </Project>

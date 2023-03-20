@@ -20,6 +20,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TSMoreland.SourceGenerators
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TSMoreland.SourceGenerators.Test", "test\TSMoreland.SourceGenerators.Test\TSMoreland.SourceGenerators.Test.csproj", "{14BB1136-1967-43AF-84E9-92F14886C987}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DebugDisplay", "DebugDisplay", "{DFF82AA3-9E56-412C-B09C-47FE54DC0E6D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TSMoreland.SourceGenerators.DebugDisplay.Generator", "src\DebugDisplay.Generator\TSMoreland.SourceGenerators.DebugDisplay.Generator.csproj", "{0E4BF870-4095-4E0E-B84D-BA0ED6C4BF9E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -46,6 +50,10 @@ Global
 		{14BB1136-1967-43AF-84E9-92F14886C987}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{14BB1136-1967-43AF-84E9-92F14886C987}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{14BB1136-1967-43AF-84E9-92F14886C987}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0E4BF870-4095-4E0E-B84D-BA0ED6C4BF9E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0E4BF870-4095-4E0E-B84D-BA0ED6C4BF9E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0E4BF870-4095-4E0E-B84D-BA0ED6C4BF9E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0E4BF870-4095-4E0E-B84D-BA0ED6C4BF9E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -54,6 +62,7 @@ Global
 		{DFC7D05C-6243-4B21-979B-28EEE9DD4C8D} = {886AD4D1-6D49-4F5F-A18C-5C367C0EE2D6}
 		{0813041C-6880-4F96-84F5-003E08D3F130} = {886AD4D1-6D49-4F5F-A18C-5C367C0EE2D6}
 		{BB46376B-E704-4E5E-B848-A77F08588B85} = {886AD4D1-6D49-4F5F-A18C-5C367C0EE2D6}
+		{0E4BF870-4095-4E0E-B84D-BA0ED6C4BF9E} = {DFF82AA3-9E56-412C-B09C-47FE54DC0E6D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A13201A1-8DE2-4ED4-A273-11ECFC5A2EB3}
