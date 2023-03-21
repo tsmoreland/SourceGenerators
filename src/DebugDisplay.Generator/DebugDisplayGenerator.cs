@@ -31,14 +31,15 @@ public sealed class DebugDisplayGenerator : IIncrementalGenerator // preferred o
     {
         return node is ClassDeclarationSyntax { AttributeLists.Count: > 0 };
     }
-    private static ClassDeclarationSyntax? GetSemanticTarget(GeneratorSyntaxContext ctx)
+    private static ClassDeclarationSyntax? GetSemanticTarget(GeneratorSyntaxContext context)
     {
-        ClassDeclarationSyntax classDeclaration = (ClassDeclarationSyntax)ctx.Node;
+        ClassDeclarationSyntax classDeclaration = (ClassDeclarationSyntax)context.Node;
+        INamedTypeSymbol? classSymbol = context.SemanticModel.GetDeclaredSymbol(classDeclaration);
+        INamedTypeSymbol? attributeSymbol = context.SemanticModel.Compilation
+            .GetTypeByMetadataName("TSMoreland.SourceGenerators.DebugDisplay.Generator.GenerateDebugDisplayAttribute");
 
-        bool hasGenerateDebugDisplayAttribute = classDeclaration.AttributeLists
-            .SelectMany(al => al.Attributes)
-            .Select(attributeSyntax => attributeSyntax.Name.ToString())
-            .Any(attributeName => attributeName is "GenerateDebugDisplay" or "GenerateDebugDisplayAttribute");
+        bool hasGenerateDebugDisplayAttribute = classSymbol is not null && classSymbol.GetAttributes()
+            .Any(symbol => symbol.AttributeClass?.Equals(attributeSymbol) is true);
 
         return hasGenerateDebugDisplayAttribute
             ? classDeclaration
