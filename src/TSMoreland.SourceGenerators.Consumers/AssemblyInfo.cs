@@ -11,18 +11,6 @@
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-using TSMoreland.SourceGenerators.DebugDisplay.Generator;
+using System.Runtime.CompilerServices;
 
-namespace TSMoreland.SourceGenerators.Consumers
-{
-    [GenerateDebugDisplay]
-    public sealed partial class SampleClassDto
-    {
-        public required Guid Id { get; init; }
-        public required string FirstName { get; init; }
-        public required string LastName { get; init; }
-        public string? MiddleName { get; init; }
-
-        public required string Email { get; init; }
-    }
-}
+[assembly:InternalsVisibleTo("TSMoreland.SourceGenerators.Test")]
