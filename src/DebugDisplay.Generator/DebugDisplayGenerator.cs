@@ -14,38 +14,68 @@ public sealed class DebugDisplayGenerator : IIncrementalGenerator // preferred o
         // get all class declaration syntax nodes
         IncrementalValuesProvider<ClassDeclarationSyntax> classes = context.SyntaxProvider
             .CreateSyntaxProvider(
-                predicate: static (node, _) => node is ClassDeclarationSyntax,
-                transform: static (ctx, _) => (ClassDeclarationSyntax)ctx.Node);
-        context.RegisterSourceOutput(classes, TypeDeclarationExecute);
+                predicate: static (node, _) => IsSyntaxTargetWithAttribute(node),
+                transform: static (ctx, _) => GetSemanticTarget(ctx)!) // GetSemanticTarget can return null but it's caught by the where clause
+            .Where(static target => target is not null);
+        context.RegisterSourceOutput(classes, static (ctx, source) =>  Execute(ctx, source));
+        context.RegisterPostInitializationOutput(static ctx => PostInitializationOutput(ctx));
 
         IncrementalValuesProvider<RecordDeclarationSyntax> records = context.SyntaxProvider
             .CreateSyntaxProvider(
                 predicate: static (node, _) => node is RecordDeclarationSyntax,
                 transform: static (ctx, _) => (RecordDeclarationSyntax)ctx.Node);
-        context.RegisterSourceOutput(records, TypeDeclarationExecute);
+        context.RegisterSourceOutput(records, static (ctx, declaration) => Execute(ctx, declaration));
+    }
+
+    private static bool IsSyntaxTargetWithAttribute(SyntaxNode node)
+    {
+        return node is ClassDeclarationSyntax { AttributeLists.Count: > 0 };
+    }
+    private static ClassDeclarationSyntax? GetSemanticTarget(GeneratorSyntaxContext ctx)
+    {
+        ClassDeclarationSyntax classDeclaration = (ClassDeclarationSyntax)ctx.Node;
+
+        bool hasGenerateDebugDisplayAttribute = classDeclaration.AttributeLists
+            .SelectMany(al => al.Attributes)
+            .Select(attributeSyntax => attributeSyntax.Name.ToString())
+            .Any(attributeName => attributeName is "GenerateDebugDisplay" or "GenerateDebugDisplayAttribute");
+
+        return hasGenerateDebugDisplayAttribute
+            ? classDeclaration
+            : null;
+    }
+
+    private static void PostInitializationOutput(IncrementalGeneratorPostInitializationContext context)
+    {
+        context.AddSource("TSMoreland.SourceGenerators.DebugDisplay.Generator.GenerateDebugDisplayAttribute.g.cs", """
+            namespace TSMoreland.SourceGenerators.DebugDisplay.Generator
+            {
+                internal sealed class GenerateDebugDisplayAttribute : System.Attribute
+                {
+                }
+            }
+            """);
     }
 
     private static bool TryGetClassAndNamespaceName(BaseTypeDeclarationSyntax typeDeclaration, out string @namespace,
-        out string declartionName)
+        out string declarationName)
     {
         if (typeDeclaration.Parent is not BaseNamespaceDeclarationSyntax namespaceDeclarationSyntax)
         {
-            @namespace = declartionName = string.Empty;
+            @namespace = declarationName = string.Empty;
             return false;
         }
 
         @namespace = namespaceDeclarationSyntax.Name.ToString();
-        declartionName = typeDeclaration.Identifier.Text;
+        declarationName = typeDeclaration.Identifier.Text;
         return true;
     }
 
-    private static void TypeDeclarationExecute(SourceProductionContext context,
+    private static void Execute(SourceProductionContext context,
         TypeDeclarationSyntax declaration)
     {
-        List<ParameterSyntax> recordParameters = declaration is RecordDeclarationSyntax { ParameterList: not null }  recordDeclaration
-            ? recordDeclaration.ParameterList.Parameters
-                .Where(p => p.Modifiers.Any(SyntaxKind.PublicKeyword))
-                .ToList() 
+        List<ParameterSyntax> recordParameters = declaration is RecordDeclarationSyntax { ParameterList: not null } recordDeclaration
+            ? recordDeclaration.ParameterList.Parameters.ToList()
             : new List<ParameterSyntax>();
 
         List<PropertyDeclarationSyntax> properties = declaration.Members
@@ -57,23 +87,23 @@ public sealed class DebugDisplayGenerator : IIncrementalGenerator // preferred o
             return;
         }
 
-        if (!TryGetClassAndNamespaceName(declaration, out string @namespace, out string declartionName))
+        if (!TryGetClassAndNamespaceName(declaration, out string @namespace, out string declarationName))
         {
             return;
         }
-        string declartionType = declaration switch
+        string declarationType = declaration switch
         {
             ClassDeclarationSyntax _ => "class",
             RecordDeclarationSyntax => "record",
             _ => string.Empty,
         };
 
-        if (declartionType is not { Length: > 0 })
+        if (declarationType is not { Length: > 0 })
         {
             return;
         }
 
-        string filename = $"{@namespace}.{declartionName}.g.cs";
+        string filename = $"{@namespace}.{declarationName}.g.cs";
 
         StringBuilder sourceBuilder = new();
         sourceBuilder.AppendLine($$"""
@@ -92,10 +122,10 @@ public sealed class DebugDisplayGenerator : IIncrementalGenerator // preferred o
         {
             sourceBuilder.Append($"{propertyName}: {{{propertyName}Truncated}} ");
         }
-        sourceBuilder.Append("\")]");
+        sourceBuilder.AppendLine("\")]");
 
         sourceBuilder.AppendLine($$"""
-                partial {{declartionType}} {{declartionName}}
+                partial {{declarationType}} {{declarationName}}
                 {
             """);
 
@@ -103,12 +133,6 @@ public sealed class DebugDisplayGenerator : IIncrementalGenerator // preferred o
         {
             sourceBuilder.Append(GenerateTruncatedProperty(parameter.Identifier.Text));
         }
-        /*
-        foreach (string parameterName in recordParameters.Select(parameter => parameter.Identifier.Text))
-        {
-            sourceBuilder.Append(GenerateTruncatedProperty(parameterName));
-        }
-        */
 
         foreach (string propertyName in properties.Select(property => property.Identifier.Text))
         {
@@ -119,7 +143,7 @@ public sealed class DebugDisplayGenerator : IIncrementalGenerator // preferred o
                 }
             }
             """);
-    
+
         context.AddSource(filename, sourceBuilder.ToString());
     }
 
