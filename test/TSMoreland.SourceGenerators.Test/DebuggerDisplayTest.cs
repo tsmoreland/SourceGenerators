@@ -11,6 +11,8 @@
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
+using System.Diagnostics;
+using System.Reflection;
 using FluentAssertions;
 using NUnit.Framework;
 using TSMoreland.SourceGenerators.Consumers;
@@ -22,9 +24,16 @@ public sealed class DebuggerDisplayTest
     [Test]
     public void GeneratedDebuggerDisplay_ShouldIncludeAllProperties()
     {
+        const string expectedValue = "Id: {IdTruncated} FirstName: {FirstNameTruncated} LastName: {LastNameTruncated} MiddleName: {MiddleNameTruncated} Email: {EmailTruncated} ";
         SampleDto dto = new(Guid.NewGuid(), "abcdefghijklmnopqrstuvwxyz", "12345678901234567890") { Email = "alpha@example.com" };
 
         dto.Should().NotBeNull();
+        DebugDisplay.Generator.GenerateDebugDisplayAttribute? generateAttribute = typeof(SampleDto).GetCustomAttribute<DebugDisplay.Generator.GenerateDebugDisplayAttribute>();
+        DebuggerDisplayAttribute? attribute = typeof(SampleDto).GetCustomAttribute<DebuggerDisplayAttribute>();
 
+        generateAttribute.Should().NotBeNull();
+        attribute.Should().NotBeNull();
+
+        attribute!.Value.Should().Be(expectedValue);
     }
 }
