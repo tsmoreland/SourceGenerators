@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "DebugDiagGeneratorBuild": {
+      "commandName": "DebugRoslynComponent",
+      "targetProject": "..\\TSMoreland.SourceGenerators.Consumers\\TSMoreland.SourceGenerators.Consumers.csproj"
+    }
+  }
+}
