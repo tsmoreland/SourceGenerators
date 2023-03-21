@@ -11,14 +11,20 @@
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-using System.Diagnostics;
+using FluentAssertions;
+using NUnit.Framework;
+using TSMoreland.SourceGenerators.Consumers;
 
-namespace TSMoreland.SourceGenerators.Consumers;
+namespace TSMoreland.SourceGenerators.Test;
 
-public sealed partial record class SampleDto(Guid Id, string FirstName, string LastName)
+public sealed class DebuggerDisplayTest
 {
-    public string? MiddleName { get; init; }
+    [Test]
+    public void GeneratedDebuggerDisplay_ShouldIncludeAllProperties()
+    {
+        SampleDto dto = new(Guid.NewGuid(), "abcdefghijklmnopqrstuvwxyz", "12345678901234567890") { Email = "alpha@example.com" };
 
-    public required string Email { get; init; }
+        dto.Should().NotBeNull();
 
+    }
 }

@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace TSMoreland.SourceGenerators.DebugDisplay.Generator;
@@ -15,16 +16,16 @@ public sealed class DebugDisplayGenerator : IIncrementalGenerator // preferred o
             .CreateSyntaxProvider(
                 predicate: static (node, _) => node is ClassDeclarationSyntax,
                 transform: static (ctx, _) => (ClassDeclarationSyntax)ctx.Node);
-        context.RegisterSourceOutput(classes, ClassExecute);
+        context.RegisterSourceOutput(classes, TypeDeclarationExecute);
 
         IncrementalValuesProvider<RecordDeclarationSyntax> records = context.SyntaxProvider
             .CreateSyntaxProvider(
                 predicate: static (node, _) => node is RecordDeclarationSyntax,
                 transform: static (ctx, _) => (RecordDeclarationSyntax)ctx.Node);
-        context.RegisterSourceOutput(records, RecordExecute);
+        context.RegisterSourceOutput(records, TypeDeclarationExecute);
     }
 
-    private static bool TryGetClassAndNamespaceName(TypeDeclarationSyntax typeDeclaration, out string @namespace,
+    private static bool TryGetClassAndNamespaceName(BaseTypeDeclarationSyntax typeDeclaration, out string @namespace,
         out string declartionName)
     {
         if (typeDeclaration.Parent is not BaseNamespaceDeclarationSyntax namespaceDeclarationSyntax)
@@ -38,9 +39,36 @@ public sealed class DebugDisplayGenerator : IIncrementalGenerator // preferred o
         return true;
     }
 
-    private static void ClassExecute(SourceProductionContext context, ClassDeclarationSyntax classDeclartion)
+    private static void TypeDeclarationExecute(SourceProductionContext context,
+        TypeDeclarationSyntax declaration)
     {
-        if (!TryGetClassAndNamespaceName(classDeclartion, out string @namespace, out string declartionName))
+        List<ParameterSyntax> recordParameters = declaration is RecordDeclarationSyntax { ParameterList: not null }  recordDeclaration
+            ? recordDeclaration.ParameterList.Parameters
+                .Where(p => p.Modifiers.Any(SyntaxKind.PublicKeyword))
+                .ToList() 
+            : new List<ParameterSyntax>();
+
+        List<PropertyDeclarationSyntax> properties = declaration.Members
+            .OfType<PropertyDeclarationSyntax>()
+            .Where(p => p.Modifiers.Any(SyntaxKind.PublicKeyword))
+            .ToList();
+        if (!properties.Any() && !recordParameters.Any())
+        {
+            return;
+        }
+
+        if (!TryGetClassAndNamespaceName(declaration, out string @namespace, out string declartionName))
+        {
+            return;
+        }
+        string declartionType = declaration switch
+        {
+            ClassDeclarationSyntax _ => "class",
+            RecordDeclarationSyntax => "record",
+            _ => string.Empty,
+        };
+
+        if (declartionType is not { Length: > 0 })
         {
             return;
         }
@@ -52,13 +80,42 @@ public sealed class DebugDisplayGenerator : IIncrementalGenerator // preferred o
             using System.Diagnostics;
             namespace {{@namespace}}
             {
-                [DebuggerDisplay("{GetDebuggerDisplayContent()}")]
-                partial class {{declartionName}}
+            """);
+
+
+        sourceBuilder.Append("    [DebuggerDisplay(\"");
+        foreach (string parameterName in recordParameters.Select(parameter => parameter.Identifier.Text))
+        {
+            sourceBuilder.Append($"{parameterName}: {{{parameterName}Truncated}} ");
+        }
+        foreach (string propertyName in properties.Select(property => property.Identifier.Text))
+        {
+            sourceBuilder.Append($"{propertyName}: {{{propertyName}Truncated}} ");
+        }
+        sourceBuilder.Append("\")]");
+
+        sourceBuilder.AppendLine($$"""
+                partial {{declartionType}} {{declartionName}}
                 {
-                    private string GetDebuggerDisplayContent()
-                    {
-                        return "pending...";
-                    }
+            """);
+
+        foreach (ParameterSyntax parameter in recordParameters)
+        {
+            sourceBuilder.Append(GenerateTruncatedProperty(parameter.Identifier.Text));
+        }
+        /*
+        foreach (string parameterName in recordParameters.Select(parameter => parameter.Identifier.Text))
+        {
+            sourceBuilder.Append(GenerateTruncatedProperty(parameterName));
+        }
+        */
+
+        foreach (string propertyName in properties.Select(property => property.Identifier.Text))
+        {
+            sourceBuilder.Append(GenerateTruncatedProperty(propertyName));
+        }
+
+        sourceBuilder.AppendLine("""
                 }
             }
             """);
@@ -66,31 +123,26 @@ public sealed class DebugDisplayGenerator : IIncrementalGenerator // preferred o
         context.AddSource(filename, sourceBuilder.ToString());
     }
 
-    private static void RecordExecute(SourceProductionContext context, RecordDeclarationSyntax recordDeclaration)
+    private static string GenerateTruncatedProperty(string propertyName)
     {
-        if (!TryGetClassAndNamespaceName(recordDeclaration, out string @namespace, out string declartionName))
-        {
-            return;
-        }
+        return $$"""
 
-        string filename = $"{@namespace}.{declartionName}.g.cs";
-
-        StringBuilder sourceBuilder = new();
-        sourceBuilder.AppendLine($$"""
-            using System.Diagnostics;
-            namespace {{@namespace}}
-            {
-                [DebuggerDisplay("{GetDebuggerDisplayContent()}")]
-                partial record {{declartionName}}
+                private string {{propertyName}}Truncated 
                 {
-                    private string GetDebuggerDisplayContent()
+                    get
                     {
-                        return "pending...";
+                        string content = {{propertyName}} != default!
+                            ? {{propertyName}}.ToString()
+                            : string.Empty;
+
+                        if (content is not { Length: > 10 })
+                        {
+                            return content;
+                        }
+                        return $"{content[..10]}...";
                     }
                 }
-            }
-            """);
-    
-        context.AddSource(filename, sourceBuilder.ToString());
+
+        """;
     }
 }
