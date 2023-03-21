@@ -39,7 +39,7 @@ public sealed class DebugDisplayGenerator : IIncrementalGenerator // preferred o
             .GetTypeByMetadataName("TSMoreland.SourceGenerators.DebugDisplay.Generator.GenerateDebugDisplayAttribute");
 
         bool hasGenerateDebugDisplayAttribute = classSymbol is not null && classSymbol.GetAttributes()
-            .Any(symbol => symbol.AttributeClass?.Equals(attributeSymbol) is true);
+            .Any(symbol => symbol.AttributeClass?.Equals(attributeSymbol, SymbolEqualityComparer.Default) is true);
 
         return hasGenerateDebugDisplayAttribute
             ? classDeclaration
